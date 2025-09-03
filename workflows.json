@@ -1,1 +1,13 @@
-[]
+[
+  {
+    "id": "1756893216776",
+    "name": "Test Workflow",
+    "description": "Test description",
+    "services": [
+      "s3",
+      "lambda"
+    ],
+    "diagram": "test diagram",
+    "createdAt": "2025-09-03T09:53:36.776Z"
+  }
+]
