@@ -3,34 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AWS Architecture Workflow Generator</title>
-    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <title>Enterprise Cloud Architecture Designer</title>
+    <script src="/node_modules/mermaid/dist/mermaid.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
-            font-family: 'Inter', sans-serif; 
-            background: #0d1117;
-            color: #e6edf3;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: #f8f9fa;
+            color: #333333;
             min-height: 100vh;
         }
         .container { max-width: 1600px; margin: 0 auto; padding: 20px; }
         .header { 
             text-align: center; 
             margin-bottom: 30px; 
-            background: #161b22;
-            border: 1px solid #30363d;
+            background: #ffffff;
+            border: 1px solid #dee2e6;
             padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
         .header h1 { 
-            color: #e6edf3; 
+            color: #2c5aa0; 
             margin-bottom: 15px; 
             font-size: 2.5rem;
-            font-weight: 700;
-            background: linear-gradient(45deg, #FF9900, #FF6B35);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-weight: 600;
         }
         .builder { 
             display: grid; 
@@ -39,14 +36,14 @@
             margin-bottom: 30px; 
         }
         .panel { 
-            background: #161b22; 
-            border: 1px solid #30363d;
+            background: #ffffff; 
+            border: 1px solid #dee2e6;
             padding: 30px; 
-            border-radius: 20px; 
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3); 
+            border-radius: 8px; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); 
         }
         .panel h3 {
-            color: #e6edf3;
+            color: #2c5aa0;
             margin-bottom: 20px;
             font-size: 1.4rem;
             font-weight: 600;
@@ -58,15 +55,15 @@
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
-            color: #e6edf3;
+            color: #495057;
         }
         .input-section textarea {
             width: 100%;
             padding: 15px;
-            border: 2px solid #30363d;
-            background: #0d1117;
-            color: #e6edf3;
-            border-radius: 12px;
+            border: 2px solid #ced4da;
+            background: #ffffff;
+            color: #495057;
+            border-radius: 6px;
             font-size: 1rem;
             resize: vertical;
             min-height: 120px;
@@ -74,7 +71,7 @@
         }
         .input-section textarea:focus {
             outline: none;
-            border-color: #FF9900;
+            border-color: #2c5aa0;
         }
         .service-categories {
             display: grid;
@@ -83,14 +80,13 @@
             overflow-y: auto;
         }
         .category-box {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(148, 163, 184, 0.1);
-            border-radius: 16px;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
             padding: 20px;
-            backdrop-filter: blur(10px);
         }
         .category-title {
-            color: #FF9900;
+            color: #2c5aa0;
             font-size: 1.1rem;
             font-weight: 600;
             margin-bottom: 16px;
@@ -105,21 +101,21 @@
         }
         .block-card { 
             padding: 16px; 
-            border: 1px solid #30363d; 
-            border-radius: 12px; 
+            border: 1px solid #ced4da; 
+            border-radius: 6px; 
             cursor: pointer; 
             text-align: center; 
             transition: all 0.3s ease; 
-            background: #21262d;
+            background: #ffffff;
         }
         .block-card:hover { 
-            border-color: #FF9900; 
-            background: #2d333b; 
+            border-color: #2c5aa0; 
+            background: #e9ecef; 
             transform: translateY(-2px);
         }
         .block-card.selected { 
-            border-color: #FF9900; 
-            background: linear-gradient(135deg, #FF9900, #FF6B35); 
+            border-color: #2c5aa0; 
+            background: #2c5aa0; 
             color: white; 
         }
         .block-icon {
@@ -137,26 +133,26 @@
         .selected-blocks { 
             margin-top: 25px; 
             padding: 20px;
-            background: #21262d;
-            border: 1px solid #30363d;
-            border-radius: 12px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
         }
         .selected-block { 
             display: inline-block; 
-            background: linear-gradient(135deg, #FF9900, #FF6B35); 
+            background: #2c5aa0; 
             color: white; 
             padding: 8px 15px; 
             margin: 4px; 
-            border-radius: 20px; 
+            border-radius: 4px; 
             font-size: 0.85rem;
         }
         .generate-btn { 
             width: 100%; 
             padding: 18px; 
-            background: linear-gradient(135deg, #FF9900, #FF6B35); 
+            background: #2c5aa0; 
             color: white; 
             border: none; 
-            border-radius: 12px; 
+            border-radius: 6px; 
             font-size: 1.1rem; 
             font-weight: 600; 
             cursor: pointer; 
@@ -164,28 +160,29 @@
             transition: all 0.3s;
         }
         .generate-btn:hover { 
+            background: #1e3d72;
             transform: translateY(-2px);
         }
         .workflow-canvas {
-            background: #0d1117;
-            border: 2px dashed #30363d;
-            border-radius: 12px;
+            background: #ffffff;
+            border: 2px dashed #ced4da;
+            border-radius: 6px;
             padding: 30px;
             min-height: 500px;
             position: relative;
         }
         .diagram-container {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 8px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
             padding: 20px;
             margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .services-explanation {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 8px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
             padding: 20px;
             margin-top: 20px;
         }
@@ -194,8 +191,9 @@
             align-items: center;
             margin-bottom: 12px;
             padding: 10px;
-            background: #21262d;
-            border-radius: 8px;
+            background: #ffffff;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
         }
         .service-icon {
             font-size: 1.5rem;
@@ -203,24 +201,25 @@
             width: 30px;
         }
         .workflow-steps {
-            background: #1c2128;
-            border-left: 4px solid #0073bb;
+            background: #e3f2fd;
+            border-left: 4px solid #2c5aa0;
             padding: 15px;
             margin-top: 15px;
-            border-radius: 0 8px 8px 0;
+            border-radius: 0 6px 6px 0;
         }
         .mermaid {
             background: #ffffff;
-            border-radius: 8px;
+            border-radius: 6px;
             padding: 20px;
             margin: 10px 0;
+            border: 1px solid #dee2e6;
         }
         .mermaid svg {
             max-width: 100%;
             height: auto;
         }
         .service-item:hover {
-            background: #2d333b;
+            background: #f8f9fa;
             transition: background 0.2s;
         }
     </style>
@@ -228,21 +227,21 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Cloud Architecture Workflow Generator</h1>
-            <p>Generate professional cloud architecture diagrams with interconnected services and dynamic workflows</p>
+            <h1>Enterprise Cloud Architecture Designer</h1>
+            <p>Design professional cloud infrastructure diagrams with integrated services and workflow planning</p>
         </div>
 
         <div class="builder">
             <div class="panel">
-                <h3>Describe Your Requirements</h3>
+                <h3>Define Your Requirements</h3>
                 <div class="input-section">
-                    <label for="requirements">What do you want to build?</label>
-                    <textarea id="requirements" placeholder="e.g., Build me an architecture for a web app with login, chatbot, product recommendations, and email notifications..."></textarea>
+                    <label for="requirements">Describe your business requirements</label>
+                    <textarea id="requirements" placeholder="e.g., Design a scalable web application with user authentication, automated recommendations, and email notifications..."></textarea>
                 </div>
-                <button class="generate-btn" onclick="analyzeRequirements()">Analyze & Suggest Services</button>
+                <button class="generate-btn" onclick="analyzeRequirements()">Analyze & Recommend Services</button>
                 
-                <h3 style="margin-top: 30px;">AWS Cloud Services</h3>
-                <p style="font-size: 0.9rem; color: #8b949e; margin-bottom: 15px;">Select services from organized categories below</p>
+                <h3 style="margin-top: 30px;">Cloud Service Catalog</h3>
+                <p style="font-size: 0.9rem; color: #6c757d; margin-bottom: 15px;">Select services from organized categories below</p>
                 <div class="service-categories" id="blocksGrid"></div>
                 
                 <div class="selected-blocks">
@@ -252,13 +251,13 @@
             </div>
 
             <div class="panel">
-                <h3>Generated Architecture</h3>
+                <h3>Architecture Design</h3>
                 <div class="workflow-canvas" id="workflowCanvas">
-                    <p style="text-align: center; color: #8b949e; margin-top: 150px;">
-                        Select services or describe your requirements to generate architecture
+                    <p style="text-align: center; color: #6c757d; margin-top: 150px;">
+                        Select services or describe your requirements to generate architecture diagram
                     </p>
                 </div>
-                <button class="generate-btn" onclick="generateArchitecture()">Generate Architecture</button>
+                <button class="generate-btn" onclick="generateArchitecture()">Generate Architecture Diagram</button>
             </div>
         </div>
     </div>
@@ -543,7 +542,7 @@
             const canvas = document.getElementById('workflowCanvas');
             
             if (selectedServices.size === 0) {
-                canvas.innerHTML = `<p style="text-align: center; color: #8b949e; margin-top: 150px;">Select services to generate architecture workflow</p>`;
+                canvas.innerHTML = `<p style="text-align: center; color: #6c757d; margin-top: 150px;">Select services to generate architecture workflow</p>`;
                 return;
             }
 
@@ -553,24 +552,24 @@
             
             canvas.innerHTML = `
                 <div class="diagram-container">
-                    <h4 style="color: #e6edf3; margin-bottom: 20px; font-size: 1.3rem;">Architecture Workflow</h4>
+                    <h4 style="color: #2c5aa0; margin-bottom: 20px; font-size: 1.3rem;">Architecture Workflow</h4>
                     <div class="mermaid">${mermaidCode}</div>
                 </div>
                 <div class="services-explanation">
-                    <h4 style="color: #e6edf3; margin-bottom: 20px; font-size: 1.2rem;">Selected Services</h4>
+                    <h4 style="color: #2c5aa0; margin-bottom: 20px; font-size: 1.2rem;">Selected Services</h4>
                     ${servicesArray.map(key => {
                         const service = cloudServices[key];
                         return `<div class="service-item">
                             <span class="service-icon" style="font-size: 1.8rem; margin-right: 16px;">${service.icon}</span>
                             <div>
-                                <strong style="color: #e6edf3; font-size: 1.1rem;">${service.name}</strong>
-                                <br><span style="color: #8b949e; font-size: 0.95rem;">${service.description}</span>
+                                <strong style="color: #495057; font-size: 1.1rem;">${service.name}</strong>
+                                <br><span style="color: #6c757d; font-size: 0.95rem;">${service.description}</span>
                             </div>
                         </div>`;
                     }).join('')}
                 </div>
-                <div class="workflow-steps" style="background: rgba(59, 130, 246, 0.1); border-left: 4px solid #3b82f6; padding: 24px; margin-top: 24px; border-radius: 0 16px 16px 0;">
-                    <h4 style="color: #3b82f6; margin-bottom: 16px; font-size: 1.2rem;">User Workflow Steps</h4>
+                <div class="workflow-steps" style="background: #e3f2fd; border-left: 4px solid #2c5aa0; padding: 24px; margin-top: 24px; border-radius: 0 6px 6px 0;">
+                    <h4 style="color: #2c5aa0; margin-bottom: 16px; font-size: 1.2rem;">Implementation Workflow</h4>
                     ${workflowSteps}
                 </div>
             `;
@@ -730,8 +729,8 @@
             ];
             
             return steps.map((step, index) => 
-                `<div style="margin-bottom: 12px; padding: 8px 0; border-bottom: 1px solid rgba(59, 130, 246, 0.2);">
-                    <span style="color: #3b82f6; font-weight: 600;">${index + 1}.</span> ${step}
+                `<div style="margin-bottom: 12px; padding: 8px 0; border-bottom: 1px solid rgba(44, 90, 160, 0.2);">
+                    <span style="color: #2c5aa0; font-weight: 600;">${index + 1}.</span> ${step}
                 </div>`
             ).join('');
         }

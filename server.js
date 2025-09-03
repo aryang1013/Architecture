@@ -10,6 +10,7 @@ const WORKFLOWS_FILE = path.join(__dirname, 'workflows.json');
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
+app.use('/node_modules', express.static('node_modules'));
 
 // Serve architecture-generator.html as default
 app.get('/', (req, res) => {
