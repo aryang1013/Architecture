@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced AWS Architecture Generator - Test</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 20px;
+            background: #0d1117;
+            color: #e6edf3;
+        }
+        .demo-section {
+            background: #161b22;
+            border: 1px solid #30363d;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .service-card {
+            border: 1px solid #30363d;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            background: #21262d;
+        }
+        .service-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 10px;
+            display: block;
+        }
+        .example-input {
+            background: #1c2128;
+            padding: 15px;
+            border-left: 4px solid #0073bb;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .feature-list {
+            background: #21262d;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .feature-list ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .feature-list li {
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 Enhanced AWS Architecture Generator</h1>
+    <p>The AWS Architecture Generator has been significantly enhanced with professional features:</p>
+
+    <div class="demo-section">
+        <h2>✨ Key Enhancements</h2>
+        <div class="feature-list">
+            <ul>
+                <li><strong>Official AWS Icons:</strong> Uses real AWS service icons from the official AWS Architecture Icons set</li>
+                <li><strong>Intelligent Service Mapping:</strong> Enhanced keyword detection with scoring system</li>
+                <li><strong>Layered Architecture:</strong> Services organized into logical layers (Frontend → API → Backend → Database → AI/ML → Notifications)</li>
+                <li><strong>Professional Diagrams:</strong> Mermaid.js diagrams with proper grouping, styling, and directional flow</li>
+                <li><strong>Comprehensive Service Library:</strong> Expanded from 9 to 16 AWS services with detailed descriptions</li>
+                <li><strong>Smart Auto-Suggestions:</strong> Automatically adds foundational services (API Gateway, Lambda, CloudWatch)</li>
+                <li><strong>Category Grouping:</strong> Services grouped by AWS categories for better organization</li>
+                <li><strong>Enhanced Workflow Steps:</strong> Intelligent step generation based on service layers</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="demo-section">
+        <h2>🎯 Example Input/Output</h2>
+        <div class="example-input">
+            <strong>Example Input:</strong><br>
+            "Create a system with user authentication, chatbot, search functionality, and push notifications."
+        </div>
+        
+        <h3>Expected Services Selected:</h3>
+        <div class="service-grid">
+            <div class="service-card">
+                <img src="https://d1.awsstatic.com/webteam/architecture-icons/Security-Identity-Compliance/Amazon-Cognito_64.png" alt="Cognito" class="service-icon">
+                <strong>Amazon Cognito</strong><br>
+                <small>User authentication</small>
+            </div>
+            <div class="service-card">
+                <img src="https://d1.awsstatic.com/webteam/architecture-icons/Storage/Amazon-Simple-Storage-Service_64.png" alt="S3" class="service-icon">
+                <strong>Amazon S3</strong><br>
+                <small>Static hosting</small>
+            </div>
+            <div class="service-card">
+                <img src="https://d1.awsstatic.com/webteam/architecture-icons/Networking-Content-Delivery/Amazon-API-Gateway_64.png" alt="API Gateway" class="service-icon">
+                <strong>API Gateway</strong><br>
+                <small>API management</small>
+            </div>
+            <div class="service-card">
+                <img src="https://d1.awsstatic.com/webteam/architecture-icons/Compute/AWS-Lambda_64.png" alt="Lambda" class="service-icon">
+                <strong>AWS Lambda</strong><br>
+                <small>Serverless compute</small>
+            </div>
+            <div class="service-card">
+                <img src="https://d1.awsstatic.com/webteam/architecture-icons/Machine-Learning/Amazon-Lex_64.png" alt="Lex" class="service-icon">
+                <strong>Amazon Lex</strong><br>
+                <small>Chatbot service</small>
+            </div>
+            <div class="service-card">
+                <img src="https://d1.awsstatic.com/webteam/architecture-icons/Analytics/Amazon-OpenSearch-Service_64.png" alt="OpenSearch" class="service-icon">
+                <strong>Amazon OpenSearch</strong><br>
+                <small>Search engine</small>
+            </div>
+            <div class="service-card">
+                <img src="https://d1.awsstatic.com/webteam/architecture-icons/Customer-Engagement/Amazon-Pinpoint_64.png" alt="Pinpoint" class="service-icon">
+                <strong>Amazon Pinpoint</strong><br>
+                <small>Push notifications</small>
+            </div>
+            <div class="service-card">
+                <img src="https://d1.awsstatic.com/webteam/architecture-icons/Database/Amazon-DynamoDB_64.png" alt="DynamoDB" class="service-icon">
+                <strong>Amazon DynamoDB</strong><br>
+                <small>NoSQL database</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="demo-section">
+        <h2>🏗️ Architecture Layers</h2>
+        <p>Services are now organized into logical layers for professional AWS architecture diagrams:</p>
+        <div class="feature-list">
+            <ul>
+                <li><strong>Frontend Layer:</strong> S3, CloudFront, Cognito</li>
+                <li><strong>API Layer:</strong> API Gateway</li>
+                <li><strong>Backend Layer:</strong> Lambda, SQS, OpenSearch</li>
+                <li><strong>AI/ML Layer:</strong> Lex, Personalize</li>
+                <li><strong>Database Layer:</strong> DynamoDB, RDS, ElastiCache</li>
+                <li><strong>Notifications Layer:</strong> Pinpoint, SES, SNS</li>
+                <li><strong>Management Layer:</strong> CloudWatch</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="demo-section">
+        <h2>🔧 How to Test</h2>
+        <ol>
+            <li>Open <a href="http://localhost:3000/architecture-generator.html" target="_blank">http://localhost:3000/architecture-generator.html</a></li>
+            <li>Try the example input: "Create a system with user authentication, chatbot, search functionality, and push notifications."</li>
+            <li>Click "Analyze & Suggest Services" to see intelligent service selection</li>
+            <li>Click "Generate Architecture Diagram" to see the professional AWS-style diagram</li>
+            <li>Notice the layered organization, official AWS icons, and detailed workflow steps</li>
+        </ol>
+    </div>
+
+    <div class="demo-section">
+        <h2>📊 Technical Improvements</h2>
+        <div class="feature-list">
+            <ul>
+                <li><strong>Enhanced Mermaid Diagrams:</strong> Subgraphs for each layer with proper styling</li>
+                <li><strong>Smart Connections:</strong> Logical flow between layers (Frontend → API → Backend → Database)</li>
+                <li><strong>Service Scoring:</strong> Keyword matching with weighted scoring for better suggestions</li>
+                <li><strong>Fallback Icons:</strong> Graceful degradation if AWS icons fail to load</li>
+                <li><strong>Responsive Design:</strong> Better mobile and desktop experience</li>
+                <li><strong>Category Organization:</strong> Services grouped by AWS service categories</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="demo-section">
+        <h2>🎨 Visual Enhancements</h2>
+        <div class="feature-list">
+            <ul>
+                <li>Official AWS orange (#FF9900) color scheme</li>
+                <li>Professional AWS-style service icons</li>
+                <li>Layered diagram organization with color-coded sections</li>
+                <li>Enhanced typography and spacing</li>
+                <li>Improved hover effects and transitions</li>
+                <li>Better scrollbar styling for service selection</li>
+            </ul>
+        </div>
+    </div>
+
+    <p style="text-align: center; margin-top: 40px; color: #666;">
+        <strong>The enhanced AWS Architecture Generator now produces professional, AWS-standard architecture diagrams!</strong>
+    </p>
+</body>
+</html>

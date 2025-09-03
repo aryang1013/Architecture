@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Architecture Workflow Generator</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #0d1117;
+            color: #e6edf3;
+            min-height: 100vh;
+        }
+        .container { max-width: 1600px; margin: 0 auto; padding: 20px; }
+        .header { 
+            text-align: center; 
+            margin-bottom: 30px; 
+            background: #161b22;
+            border: 1px solid #30363d;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        .header h1 { 
+            color: #e6edf3; 
+            margin-bottom: 15px; 
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #FF9900, #FF6B35);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .builder { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 30px; 
+            margin-bottom: 30px; 
+        }
+        .panel { 
+            background: #161b22; 
+            border: 1px solid #30363d;
+            padding: 30px; 
+            border-radius: 20px; 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3); 
+        }
+        .panel h3 {
+            color: #e6edf3;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+        .input-section {
+            margin-bottom: 25px;
+        }
+        .input-section label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #e6edf3;
+        }
+        .input-section textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #30363d;
+            background: #0d1117;
+            color: #e6edf3;
+            border-radius: 12px;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 120px;
+            transition: border-color 0.2s;
+        }
+        .input-section textarea:focus {
+            outline: none;
+            border-color: #FF9900;
+        }
+        .service-categories {
+            display: grid;
+            gap: 24px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .category-box {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+        .category-title {
+            color: #FF9900;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .blocks-grid { 
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+        }
+        .block-card { 
+            padding: 16px; 
+            border: 1px solid #30363d; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            text-align: center; 
+            transition: all 0.3s ease; 
+            background: #21262d;
+        }
+        .block-card:hover { 
+            border-color: #FF9900; 
+            background: #2d333b; 
+            transform: translateY(-2px);
+        }
+        .block-card.selected { 
+            border-color: #FF9900; 
+            background: linear-gradient(135deg, #FF9900, #FF6B35); 
+            color: white; 
+        }
+        .block-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        .block-name { 
+            font-weight: 600; 
+            margin-bottom: 8px; 
+        }
+        .block-desc { 
+            font-size: 0.85rem; 
+            opacity: 0.8; 
+        }
+        .selected-blocks { 
+            margin-top: 25px; 
+            padding: 20px;
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+        }
+        .selected-block { 
+            display: inline-block; 
+            background: linear-gradient(135deg, #FF9900, #FF6B35); 
+            color: white; 
+            padding: 8px 15px; 
+            margin: 4px; 
+            border-radius: 20px; 
+            font-size: 0.85rem;
+        }
+        .generate-btn { 
+            width: 100%; 
+            padding: 18px; 
+            background: linear-gradient(135deg, #FF9900, #FF6B35); 
+            color: white; 
+            border: none; 
+            border-radius: 12px; 
+            font-size: 1.1rem; 
+            font-weight: 600; 
+            cursor: pointer; 
+            margin-top: 25px; 
+            transition: all 0.3s;
+        }
+        .generate-btn:hover { 
+            transform: translateY(-2px);
+        }
+        .workflow-canvas {
+            background: #0d1117;
+            border: 2px dashed #30363d;
+            border-radius: 12px;
+            padding: 30px;
+            min-height: 500px;
+            position: relative;
+        }
+        .diagram-container {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .services-explanation {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .service-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 10px;
+            background: #21262d;
+            border-radius: 8px;
+        }
+        .service-icon {
+            font-size: 1.5rem;
+            margin-right: 12px;
+            width: 30px;
+        }
+        .workflow-steps {
+            background: #1c2128;
+            border-left: 4px solid #0073bb;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 0 8px 8px 0;
+        }
+        .mermaid {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 10px 0;
+        }
+        .mermaid svg {
+            max-width: 100%;
+            height: auto;
+        }
+        .service-item:hover {
+            background: #2d333b;
+            transition: background 0.2s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Cloud Architecture Workflow Generator</h1>
+            <p>Generate professional cloud architecture diagrams with interconnected services and dynamic workflows</p>
+        </div>
+
+        <div class="builder">
+            <div class="panel">
+                <h3>Describe Your Requirements</h3>
+                <div class="input-section">
+                    <label for="requirements">What do you want to build?</label>
+                    <textarea id="requirements" placeholder="e.g., Build me an architecture for a web app with login, chatbot, product recommendations, and email notifications..."></textarea>
+                </div>
+                <button class="generate-btn" onclick="analyzeRequirements()">Analyze & Suggest Services</button>
+                
+                <h3 style="margin-top: 30px;">AWS Cloud Services</h3>
+                <p style="font-size: 0.9rem; color: #8b949e; margin-bottom: 15px;">Select services from organized categories below</p>
+                <div class="service-categories" id="blocksGrid"></div>
+                
+                <div class="selected-blocks">
+                    <h4>Selected Services:</h4>
+                    <div id="selectedBlocks"></div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h3>Generated Architecture</h3>
+                <div class="workflow-canvas" id="workflowCanvas">
+                    <p style="text-align: center; color: #8b949e; margin-top: 150px;">
+                        Select services or describe your requirements to generate architecture
+                    </p>
+                </div>
+                <button class="generate-btn" onclick="generateArchitecture()">Generate Architecture</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const cloudServices = {
+            // Frontend & User Interface
+            'cloudfront': {
+                name: 'CloudFront CDN',
+                icon: '🌐',
+                description: 'Global content delivery network',
+                category: 'Frontend',
+                keywords: ['cdn', 'distribution', 'cache', 'global', 'performance'],
+                connections: ['s3', 'api-gateway']
+            },
+            's3': {
+                name: 'S3 Storage',
+                icon: '☁️',
+                description: 'Object storage for static assets',
+                category: 'Frontend',
+                keywords: ['storage', 'static', 'hosting', 'website', 'files'],
+                connections: ['cloudfront']
+            },
+            'cognito': {
+                name: 'Cognito Auth',
+                icon: '🔐',
+                description: 'User authentication & authorization',
+                category: 'Security',
+                keywords: ['auth', 'login', 'user', 'authentication', 'signin'],
+                connections: ['api-gateway']
+            },
+            
+            // API & Compute
+            'api-gateway': {
+                name: 'API Gateway',
+                icon: '🚪',
+                description: 'Managed API service',
+                category: 'API',
+                keywords: ['api', 'rest', 'websocket', 'endpoint', 'gateway'],
+                connections: ['lambda', 'cognito']
+            },
+            'lambda': {
+                name: 'Lambda Functions',
+                icon: 'λ',
+                description: 'Serverless compute functions',
+                category: 'Compute',
+                keywords: ['serverless', 'function', 'compute', 'backend', 'processing'],
+                connections: ['dynamodb', 'rds', 'sqs', 'sns']
+            },
+            'ec2': {
+                name: 'EC2 Instances',
+                icon: '🖥️',
+                description: 'Virtual server instances',
+                category: 'Compute',
+                keywords: ['server', 'vm', 'instance', 'compute', 'virtual'],
+                connections: ['rds', 'elasticache']
+            },
+            
+            // Databases
+            'dynamodb': {
+                name: 'DynamoDB',
+                icon: '🗄️',
+                description: 'NoSQL database service',
+                category: 'Database',
+                keywords: ['database', 'nosql', 'storage', 'data', 'db'],
+                connections: ['lambda']
+            },
+            'rds': {
+                name: 'RDS Database',
+                icon: '🏛️',
+                description: 'Managed relational database',
+                category: 'Database',
+                keywords: ['database', 'sql', 'relational', 'mysql', 'postgres'],
+                connections: ['lambda', 'ec2']
+            },
+            'elasticache': {
+                name: 'ElastiCache',
+                icon: '⚡',
+                description: 'In-memory caching service',
+                category: 'Database',
+                keywords: ['cache', 'redis', 'memcached', 'memory', 'performance'],
+                connections: ['lambda', 'ec2']
+            },
+            
+            // AI & ML
+            'lex': {
+                name: 'Lex Chatbot',
+                icon: '🤖',
+                description: 'Conversational AI service',
+                category: 'AI/ML',
+                keywords: ['chatbot', 'bot', 'conversation', 'ai', 'chat'],
+                connections: ['lambda']
+            },
+            'personalize': {
+                name: 'Personalize',
+                icon: '🎯',
+                description: 'ML-powered recommendations',
+                category: 'AI/ML',
+                keywords: ['recommend', 'recommendation', 'ml', 'personalization'],
+                connections: ['lambda', 's3']
+            },
+            'rekognition': {
+                name: 'Rekognition',
+                icon: '👁️',
+                description: 'Image and video analysis',
+                category: 'AI/ML',
+                keywords: ['image', 'video', 'analysis', 'recognition', 'ai'],
+                connections: ['s3', 'lambda']
+            },
+            
+            // Messaging & Notifications
+            'sqs': {
+                name: 'SQS Queue',
+                icon: '📬',
+                description: 'Message queuing service',
+                category: 'Messaging',
+                keywords: ['queue', 'message', 'async', 'decouple'],
+                connections: ['lambda', 'sns']
+            },
+            'sns': {
+                name: 'SNS Notifications',
+                icon: '📢',
+                description: 'Pub/Sub messaging service',
+                category: 'Messaging',
+                keywords: ['publish', 'subscribe', 'notification', 'topic'],
+                connections: ['sqs', 'ses']
+            },
+            'ses': {
+                name: 'SES Email',
+                icon: '📧',
+                description: 'Email sending service',
+                category: 'Messaging',
+                keywords: ['email', 'smtp', 'sending', 'notification'],
+                connections: ['sns', 'lambda']
+            },
+            
+            // Monitoring & Analytics
+            'cloudwatch': {
+                name: 'CloudWatch',
+                icon: '📊',
+                description: 'Monitoring and logging',
+                category: 'Monitoring',
+                keywords: ['monitor', 'log', 'metrics', 'alarm', 'observability'],
+                connections: ['*']
+            },
+            'kinesis': {
+                name: 'Kinesis Streams',
+                icon: '🌊',
+                description: 'Real-time data streaming',
+                category: 'Analytics',
+                keywords: ['stream', 'realtime', 'data', 'analytics', 'processing'],
+                connections: ['lambda', 's3']
+            }
+        };
+
+        let selectedServices = new Set();
+        mermaid.initialize({ 
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#3b82f6',
+                primaryTextColor: '#f8fafc',
+                primaryBorderColor: '#1e40af',
+                lineColor: '#64748b',
+                secondaryColor: '#8b5cf6',
+                tertiaryColor: '#06b6d4'
+            },
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+
+        function initializeServices() {
+            const container = document.getElementById('blocksGrid');
+            container.className = 'service-categories';
+            
+            // Group services by category
+            const categories = {};
+            Object.entries(cloudServices).forEach(([key, service]) => {
+                if (!categories[service.category]) {
+                    categories[service.category] = [];
+                }
+                categories[service.category].push([key, service]);
+            });
+            
+            // Category icons
+            const categoryIcons = {
+                'Frontend': '🎨',
+                'Security': '🔒',
+                'API': '🔌',
+                'Compute': '⚙️',
+                'Database': '💾',
+                'AI/ML': '🧠',
+                'Messaging': '💬',
+                'Monitoring': '📈',
+                'Analytics': '📊'
+            };
+            
+            container.innerHTML = '';
+            
+            Object.entries(categories).forEach(([category, services]) => {
+                const categoryBox = document.createElement('div');
+                categoryBox.className = 'category-box';
+                
+                const categoryTitle = document.createElement('div');
+                categoryTitle.className = 'category-title';
+                categoryTitle.innerHTML = `${categoryIcons[category] || '🔧'} ${category}`;
+                
+                const grid = document.createElement('div');
+                grid.className = 'blocks-grid';
+                
+                services.forEach(([key, service]) => {
+                    const card = document.createElement('div');
+                    card.className = 'block-card';
+                    card.onclick = () => toggleService(key);
+                    card.innerHTML = `
+                        <div class="block-icon">${service.icon}</div>
+                        <div class="block-name">${service.name}</div>
+                        <div class="block-desc">${service.description}</div>
+                    `;
+                    grid.appendChild(card);
+                });
+                
+                categoryBox.appendChild(categoryTitle);
+                categoryBox.appendChild(grid);
+                container.appendChild(categoryBox);
+            });
+        }
+
+        function toggleService(serviceKey) {
+            const card = event.currentTarget;
+            if (selectedServices.has(serviceKey)) {
+                selectedServices.delete(serviceKey);
+                card.classList.remove('selected');
+            } else {
+                selectedServices.add(serviceKey);
+                card.classList.add('selected');
+            }
+            updateSelectedServices();
+        }
+
+        function updateSelectedServices() {
+            const container = document.getElementById('selectedBlocks');
+            container.innerHTML = '';
+            selectedServices.forEach(serviceKey => {
+                const service = cloudServices[serviceKey];
+                const span = document.createElement('span');
+                span.className = 'selected-block';
+                span.innerHTML = `${service.icon} ${service.name}`;
+                container.appendChild(span);
+            });
+        }
+
+        function analyzeRequirements() {
+            const requirements = document.getElementById('requirements').value.toLowerCase();
+            if (!requirements.trim()) return;
+
+            selectedServices.clear();
+            document.querySelectorAll('.block-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            Object.entries(cloudServices).forEach(([key, service]) => {
+                const hasKeyword = service.keywords.some(keyword => 
+                    requirements.includes(keyword)
+                );
+                if (hasKeyword) {
+                    selectedServices.add(key);
+                    const cards = document.querySelectorAll('.block-card');
+                    const index = Object.keys(cloudServices).indexOf(key);
+                    if (cards[index]) {
+                        cards[index].classList.add('selected');
+                    }
+                }
+            });
+
+            updateSelectedServices();
+        }
+
+        function generateArchitecture() {
+            const canvas = document.getElementById('workflowCanvas');
+            
+            if (selectedServices.size === 0) {
+                canvas.innerHTML = `<p style="text-align: center; color: #8b949e; margin-top: 150px;">Select services to generate architecture workflow</p>`;
+                return;
+            }
+
+            const servicesArray = Array.from(selectedServices);
+            const mermaidCode = generateAdvancedMermaidDiagram(servicesArray);
+            const workflowSteps = generateWorkflowSteps(servicesArray);
+            
+            canvas.innerHTML = `
+                <div class="diagram-container">
+                    <h4 style="color: #e6edf3; margin-bottom: 20px; font-size: 1.3rem;">Architecture Workflow</h4>
+                    <div class="mermaid">${mermaidCode}</div>
+                </div>
+                <div class="services-explanation">
+                    <h4 style="color: #e6edf3; margin-bottom: 20px; font-size: 1.2rem;">Selected Services</h4>
+                    ${servicesArray.map(key => {
+                        const service = cloudServices[key];
+                        return `<div class="service-item">
+                            <span class="service-icon" style="font-size: 1.8rem; margin-right: 16px;">${service.icon}</span>
+                            <div>
+                                <strong style="color: #e6edf3; font-size: 1.1rem;">${service.name}</strong>
+                                <br><span style="color: #8b949e; font-size: 0.95rem;">${service.description}</span>
+                            </div>
+                        </div>`;
+                    }).join('')}
+                </div>
+                <div class="workflow-steps" style="background: rgba(59, 130, 246, 0.1); border-left: 4px solid #3b82f6; padding: 24px; margin-top: 24px; border-radius: 0 16px 16px 0;">
+                    <h4 style="color: #3b82f6; margin-bottom: 16px; font-size: 1.2rem;">User Workflow Steps</h4>
+                    ${workflowSteps}
+                </div>
+            `;
+
+            mermaid.init(undefined, canvas.querySelector('.mermaid'));
+        }
+        
+        function generateAdvancedMermaidDiagram(services) {
+            let diagram = 'graph TD\n';
+            
+            // Add styling
+            diagram += '    classDef user fill:#3b82f6,stroke:#1e40af,stroke-width:3px,color:#fff\n';
+            diagram += '    classDef frontend fill:#06b6d4,stroke:#0891b2,stroke-width:2px,color:#fff\n';
+            diagram += '    classDef backend fill:#8b5cf6,stroke:#7c3aed,stroke-width:2px,color:#fff\n';
+            diagram += '    classDef database fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff\n';
+            diagram += '    classDef messaging fill:#f59e0b,stroke:#d97706,stroke-width:2px,color:#fff\n';
+            
+            // Add user as starting point
+            diagram += '    User[👤 User/Client]\n';
+            diagram += '    Mobile[📱 Mobile App]\n';
+            diagram += '    Web[🌐 Web Browser]\n';
+            
+            // Add service nodes
+            services.forEach(serviceKey => {
+                const service = cloudServices[serviceKey];
+                diagram += `    ${serviceKey}["${service.icon} ${service.name}"]\n`;
+            });
+            
+            // Create intelligent connections starting from user
+            diagram += '    User -->|Access| Web\n';
+            diagram += '    User -->|Access| Mobile\n';
+            
+            // Connect to frontend services
+            if (services.includes('cloudfront')) {
+                diagram += '    Web -->|Request| cloudfront\n';
+                diagram += '    Mobile -->|Request| cloudfront\n';
+            }
+            
+            if (services.includes('s3') && services.includes('cloudfront')) {
+                diagram += '    cloudfront -->|Fetch Assets| s3\n';
+            } else if (services.includes('s3')) {
+                diagram += '    Web -->|Load Files| s3\n';
+            }
+            
+            // Authentication flow
+            if (services.includes('cognito')) {
+                if (services.includes('cloudfront')) {
+                    diagram += '    cloudfront -->|Auth Check| cognito\n';
+                } else {
+                    diagram += '    Web -->|Login| cognito\n';
+                    diagram += '    Mobile -->|Login| cognito\n';
+                }
+            }
+            
+            // API connections
+            if (services.includes('api-gateway')) {
+                if (services.includes('cognito')) {
+                    diagram += '    cognito -->|JWT Token| api-gateway\n';
+                } else if (services.includes('cloudfront')) {
+                    diagram += '    cloudfront -->|API Call| api-gateway\n';
+                } else {
+                    diagram += '    Web -->|API Call| api-gateway\n';
+                }
+            }
+            
+            // Backend processing
+            if (services.includes('lambda') && services.includes('api-gateway')) {
+                diagram += '    api-gateway -->|Invoke| lambda\n';
+            }
+            
+            // Database connections
+            if (services.includes('dynamodb') && services.includes('lambda')) {
+                diagram += '    lambda -->|Store Data| dynamodb\n';
+            }
+            if (services.includes('rds') && services.includes('lambda')) {
+                diagram += '    lambda -->|Query DB| rds\n';
+            }
+            if (services.includes('elasticache') && services.includes('lambda')) {
+                diagram += '    lambda -->|Cache Data| elasticache\n';
+            }
+            
+            // Messaging flows
+            if (services.includes('sqs') && services.includes('lambda')) {
+                diagram += '    lambda -->|Queue Task| sqs\n';
+            }
+            if (services.includes('sns') && services.includes('sqs')) {
+                diagram += '    sqs -->|Notify| sns\n';
+            }
+            if (services.includes('ses') && services.includes('sns')) {
+                diagram += '    sns -->|Send Email| ses\n';
+            }
+            
+            // AI/ML connections
+            if (services.includes('lex') && services.includes('lambda')) {
+                diagram += '    lambda -->|Chat Query| lex\n';
+            }
+            if (services.includes('personalize') && services.includes('lambda')) {
+                diagram += '    lambda -->|Get Recommendations| personalize\n';
+            }
+            if (services.includes('rekognition') && services.includes('lambda')) {
+                diagram += '    lambda -->|Analyze Image| rekognition\n';
+            }
+            
+            // Analytics connections
+            if (services.includes('kinesis') && services.includes('lambda')) {
+                diagram += '    lambda -->|Stream Data| kinesis\n';
+            }
+            
+            // Monitoring (connects to everything)
+            if (services.includes('cloudwatch')) {
+                services.forEach(service => {
+                    if (service !== 'cloudwatch') {
+                        diagram += `    ${service} -.->|Monitor| cloudwatch\n`;
+                    }
+                });
+            }
+            
+            // Apply styling classes
+            diagram += '    class User,Mobile,Web user\n';
+            
+            const frontendServices = services.filter(s => ['cloudfront', 's3'].includes(s));
+            if (frontendServices.length > 0) {
+                diagram += `    class ${frontendServices.join(',')} frontend\n`;
+            }
+            
+            const backendServices = services.filter(s => ['api-gateway', 'lambda', 'ec2', 'lex', 'personalize'].includes(s));
+            if (backendServices.length > 0) {
+                diagram += `    class ${backendServices.join(',')} backend\n`;
+            }
+            
+            const databaseServices = services.filter(s => ['dynamodb', 'rds', 'elasticache'].includes(s));
+            if (databaseServices.length > 0) {
+                diagram += `    class ${databaseServices.join(',')} database\n`;
+            }
+            
+            const messagingServices = services.filter(s => ['sqs', 'sns', 'ses'].includes(s));
+            if (messagingServices.length > 0) {
+                diagram += `    class ${messagingServices.join(',')} messaging\n`;
+            }
+            
+            return diagram;
+        }
+        
+        function generateWorkflowSteps(services) {
+            const steps = [
+                '👤 User accesses application via web browser or mobile app',
+                '🌐 Request routed through CDN for optimal performance',
+                '🔐 User authentication validated if required',
+                '🚪 API Gateway receives and validates the request',
+                'λ Serverless functions process business logic',
+                '💾 Data operations performed on selected databases',
+                '💬 Asynchronous messaging for background tasks',
+                '🧠 AI/ML services provide intelligent features',
+                '📧 Notifications sent via multiple channels',
+                '📊 System metrics monitored and logged',
+                '✅ Response returned to user with processed data'
+            ];
+            
+            return steps.map((step, index) => 
+                `<div style="margin-bottom: 12px; padding: 8px 0; border-bottom: 1px solid rgba(59, 130, 246, 0.2);">
+                    <span style="color: #3b82f6; font-weight: 600;">${index + 1}.</span> ${step}
+                </div>`
+            ).join('');
+        }
+
+        initializeServices();
+    </script>
+</body>
+</html>
